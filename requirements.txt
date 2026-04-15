@@ -3,3 +3,4 @@ chromadb
 ollama
 duckduckgo-search
 firebase-admin
+google-generativeai
