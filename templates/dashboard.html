@@ -7,36 +7,24 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
             background: #0c0f15;
             color: #edf2fb;
             min-height: 100vh;
         }
-        .app-wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
-        /* Sol Sidebar */
+        .app-wrapper { display: flex; min-height: 100vh; }
         .sidebar {
             width: 260px;
             background: rgba(8, 12, 20, 0.7);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-right: 1px solid rgba(255,255,255,0.06);
             padding: 28px 16px;
             display: flex;
             flex-direction: column;
         }
-        .logo-area {
-            padding-left: 12px;
-            margin-bottom: 32px;
-        }
+        .logo-area { padding-left: 12px; margin-bottom: 32px; }
         .logo {
             font-size: 1.8rem;
             font-weight: 600;
@@ -47,211 +35,104 @@
             color: transparent;
         }
         .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            border-radius: 14px;
-            color: #b0c2da;
-            margin-bottom: 6px;
-            cursor: pointer;
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; border-radius: 14px;
+            color: #b0c2da; margin-bottom: 6px; cursor: pointer;
             transition: background 0.15s;
         }
-        .nav-item.active {
-            background: #1e2a41;
-            color: white;
-        }
-        .nav-item:hover {
-            background: #1a2438;
-        }
-        .user-info {
-            margin-top: auto;
-            padding: 16px 12px;
-            border-top: 1px solid #1f2a3c;
-        }
-        .user-email {
-            font-size: 0.9rem;
-            color: #b9c8e6;
-            margin-bottom: 12px;
-            word-break: break-all;
-        }
+        .nav-item.active { background: #1e2a41; color: white; }
+        .nav-item:hover { background: #1a2438; }
+        .user-info { margin-top: auto; padding: 16px 12px; border-top: 1px solid #1f2a3c; }
+        .user-email { font-size: 0.9rem; color: #b9c8e6; margin-bottom: 12px; word-break: break-all; }
         .logout-btn {
-            background: transparent;
-            border: 1.5px solid #354153;
-            color: #d6e2ff;
-            padding: 10px 16px;
-            border-radius: 14px;
-            width: 100%;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.15s;
+            background: transparent; border: 1.5px solid #354153;
+            color: #d6e2ff; padding: 10px 16px; border-radius: 14px;
+            width: 100%; cursor: pointer; font-weight: 500; transition: all 0.15s;
         }
-        .logout-btn:hover {
-            background: #1e2a41;
-        }
-        /* Ana İçerik */
-        .main-content {
-            flex: 1;
-            padding: 32px 40px;
-            overflow-y: auto;
-        }
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-        }
-        .page-title {
-            font-size: 2rem;
-            font-weight: 500;
-            letter-spacing: -0.01em;
-        }
+        .logout-btn:hover { background: #1e2a41; }
+        .main-content { flex: 1; padding: 32px 40px; overflow-y: auto; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        .page-title { font-size: 2rem; font-weight: 500; letter-spacing: -0.01em; }
         .add-section {
-            background: #121a26;
-            border-radius: 28px;
-            padding: 24px 28px;
-            margin-bottom: 36px;
+            background: #121a26; border-radius: 28px;
+            padding: 24px 28px; margin-bottom: 36px;
             border: 1px solid #283241;
         }
-        .input-row {
-            display: flex;
-            gap: 12px;
-            max-width: 600px;
-        }
+        .input-row { display: flex; gap: 12px; max-width: 600px; }
         .input-row input {
-            flex: 1;
-            background: #0b1119;
-            border: 1.5px solid #2e3c50;
-            border-radius: 18px;
-            padding: 16px 20px;
-            font-size: 1rem;
-            color: white;
-            outline: none;
+            flex: 1; background: #0b1119; border: 1.5px solid #2e3c50;
+            border-radius: 18px; padding: 16px 20px;
+            font-size: 1rem; color: white; outline: none;
         }
-        .input-row input:focus {
-            border-color: #3b82f6;
-        }
+        .input-row input:focus { border-color: #3b82f6; }
         .btn-primary {
-            background: #2563eb;
-            border: none;
-            border-radius: 18px;
-            padding: 0 28px;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            font-size: 1rem;
-            border: 1px solid #3b82f6;
-            transition: all 0.15s;
+            background: #2563eb; border: none; border-radius: 18px;
+            padding: 0 28px; font-weight: 600; color: white;
+            cursor: pointer; font-size: 1rem; border: 1px solid #3b82f6;
+            transition: all 0.15s; white-space: nowrap;
         }
-        .btn-primary:hover {
-            background: #1d4ed8;
-        }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
         .library-header {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            margin-bottom: 20px;
+            display: flex; align-items: baseline;
+            justify-content: space-between; margin-bottom: 20px;
         }
         .library-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
+            gap: 20px; margin-bottom: 40px;
         }
         .film-card {
-            background: #111a26;
-            border-radius: 24px;
-            padding: 20px;
-            border: 1px solid #253040;
-            transition: transform 0.2s, box-shadow 0.2s;
-            backdrop-filter: blur(4px);
-            cursor: pointer;
+            background: #111a26; border-radius: 24px; padding: 20px;
+            border: 1px solid #253040; transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
         }
-        .film-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 30px -10px #00000055;
-            border-color: #3e5670;
+        .film-card:hover { transform: translateY(-4px); box-shadow: 0 20px 30px -10px #00000055; border-color: #3e5670; }
+        .film-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 8px; color: #e4ecff; }
+        .film-dna { font-size: 0.78rem; color: #a2b5d4; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .delete-btn {
+            position: absolute; top: 12px; right: 12px;
+            background: transparent; border: none; color: #4a5a72;
+            cursor: pointer; font-size: 0.85rem; padding: 4px 6px;
+            border-radius: 8px; transition: all 0.15s;
         }
-        .film-title {
-            font-weight: 600;
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            color: #e4ecff;
-        }
-        .film-dna {
-            font-size: 0.8rem;
-            color: #a2b5d4;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .rec-section {
-            margin-top: 20px;
-        }
-        .rec-card {
-            background: #0f1a28;
-            border-radius: 28px;
-            padding: 30px;
-            border: 1px solid #2a3b50;
-        }
-        .rec-content {
-            white-space: pre-wrap;
-            line-height: 1.7;
-            font-size: 1rem;
-        }
-        .status-badge {
-            display: inline-block;
-            margin-left: 16px;
-            font-size: 0.9rem;
-            color: #7f99c2;
-        }
+        .delete-btn:hover { background: #1e2a41; color: #ef4444; }
+        .rec-section { margin-top: 20px; }
+        .rec-card { background: #0f1a28; border-radius: 28px; padding: 30px; border: 1px solid #2a3b50; }
+        .rec-content { white-space: pre-wrap; line-height: 1.7; font-size: 1rem; }
+        .status-badge { display: inline-block; margin-left: 16px; font-size: 0.9rem; color: #7f99c2; }
         .loading-spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid #2563eb;
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 8px;
+            display: inline-block; width: 18px; height: 18px;
+            border: 2px solid #2563eb; border-top-color: transparent;
+            border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .empty-message {
-            color: #7f92b0;
-            font-style: italic;
-            padding: 12px 0;
+        .empty-message { color: #7f92b0; font-style: italic; padding: 12px 0; }
+        .llm-badge {
+            display: inline-block; padding: 3px 10px; border-radius: 20px;
+            font-size: 0.75rem; background: #1a2e1a; color: #4ade80;
+            border: 1px solid #2d4a2d; margin-left: 10px;
         }
     </style>
 </head>
 <body>
 <div class="app-wrapper">
-    <!-- Sidebar -->
     <div class="sidebar">
-        <div class="logo-area">
-            <span class="logo">CineMind</span>
-        </div>
-        <div class="nav-item active">
-            <span>🏠</span> Ana Sayfa
-        </div>
-        <div class="nav-item">
-            <span>🎬</span> Kütüphane
-        </div>
+        <div class="logo-area"><span class="logo">CineMind</span></div>
+        <div class="nav-item active"><span>🏠</span> Ana Sayfa</div>
+        <div class="nav-item"><span>🎬</span> Kütüphane</div>
         <div class="user-info">
             <div class="user-email" id="userEmail"></div>
             <button class="logout-btn" id="logoutBtn">Çıkış Yap</button>
         </div>
     </div>
 
-    <!-- Ana İçerik -->
     <div class="main-content">
         <div class="top-bar">
             <h1 class="page-title">Sinematik Kütüphanen</h1>
             <span id="libCount" class="status-badge"></span>
         </div>
 
-        <!-- Ekleme Alanı -->
         <div class="add-section">
             <div class="input-row">
                 <input type="text" id="titleInput" placeholder="Film veya dizi adı (örn: Mindhunter, Dune) ...">
@@ -260,7 +141,6 @@
             <div id="addStatus" style="margin-top: 14px; color: #a3bbdb;"></div>
         </div>
 
-        <!-- Kütüphane Grid -->
         <div class="library-header">
             <h2 style="font-weight: 500;">📀 Favorilerin</h2>
             <button id="refreshLibBtn" style="background: none; border: 1px solid #31445e; color: #cbd9f0; padding: 8px 16px; border-radius: 30px; cursor: pointer;">🔄 Yenile</button>
@@ -269,12 +149,11 @@
             <div class="empty-message">Henüz favori eklemedin.</div>
         </div>
 
-        <!-- Öneri Bölümü -->
         <div class="rec-section">
-            <div style="display: flex; align-items: center; margin-bottom: 18px;">
+            <div style="display: flex; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
                 <h2 style="font-weight: 500;">🔮 Sana Özel Öneriler</h2>
-                <button class="btn-primary" id="recommendBtn" style="margin-left: 24px; padding: 10px 24px;">Öneri Al</button>
-                <span id="recStatus" style="margin-left: 16px;"></span>
+                <button class="btn-primary" id="recommendBtn" style="padding: 10px 24px;">Öneri Al</button>
+                <span id="recStatus" style="margin-left: 4px;"></span>
             </div>
             <div class="rec-card">
                 <div class="rec-content" id="recommendationResult">
@@ -286,29 +165,21 @@
 </div>
 
 <script>
-    // Firebase config (login.html ile aynı olmalı)
- const firebaseConfig = {
-  apiKey: "AIzaSyA4sliX6WakLaE5mj1WsLliV8VOSDSY__w",
-  authDomain: "cinemind-96f2c.firebaseapp.com",
-  projectId: "cinemind-96f2c",
-  storageBucket: "cinemind-96f2c.firebasestorage.app",
-  messagingSenderId: "126711652018",
-  appId: "1:126711652018:web:1ab75aaa549719b32973ab",
-  measurementId: "G-VPXK2K1KMQ"
-};
+    const firebaseConfig = {
+        apiKey: "AIzaSyA4sliX6WakLaE5mj1WsLliV8VOSDSY__w",
+        authDomain: "cinemind-96f2c.firebaseapp.com",
+        projectId: "cinemind-96f2c",
+        storageBucket: "cinemind-96f2c.firebasestorage.app",
+        messagingSenderId: "126711652018",
+        appId: "1:126711652018:web:1ab75aaa549719b32973ab"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-
-    let currentUser = null;
     let idToken = null;
 
     auth.onAuthStateChanged(async (user) => {
-        if (!user) {
-            window.location.href = '/';
-            return;
-        }
-        currentUser = user;
+        if (!user) { window.location.href = '/'; return; }
         document.getElementById('userEmail').innerText = user.email;
         idToken = await user.getIdToken();
         loadLibrary();
@@ -320,19 +191,21 @@
 
     async function apiCall(endpoint, method = 'GET', body = null) {
         if (!idToken) idToken = await auth.currentUser.getIdToken();
-        const headers = {
-            'Authorization': `Bearer ${idToken}`,
-            'Content-Type': 'application/json'
-        };
+        const headers = { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' };
         const options = { method, headers };
         if (body) options.body = JSON.stringify(body);
         const response = await fetch(endpoint, options);
         if (response.status === 401) {
-            // Token expired
             idToken = await auth.currentUser.getIdToken(true);
             return apiCall(endpoint, method, body);
         }
         return response.json();
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     async function loadLibrary() {
@@ -346,23 +219,23 @@
                 return;
             }
             countSpan.innerText = `${data.length} eser`;
-            let html = '';
-            data.forEach(item => {
-                html += `<div class="film-card" title="${item.dna.replace(/"/g, '&quot;')}">
+            grid.innerHTML = data.map(item => `
+                <div class="film-card">
+                    <button class="delete-btn" onclick="deleteItem('${escapeHtml(item.title)}', this)" title="Kaldır">✕</button>
                     <div class="film-title">${escapeHtml(item.title)}</div>
-                    <div class="film-dna">${escapeHtml(item.dna.substring(0, 100))}…</div>
-                </div>`;
-            });
-            grid.innerHTML = html;
-        } catch (e) {
-            console.error(e);
-        }
+                    <div class="film-dna">${escapeHtml(item.dna.substring(0, 120))}…</div>
+                </div>
+            `).join('');
+        } catch (e) { console.error(e); }
     }
 
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+    async function deleteItem(title, btn) {
+        if (!confirm(`"${title}" kütüphaneden kaldırılsın mı?`)) return;
+        btn.disabled = true;
+        try {
+            const res = await apiCall('/api/delete', 'DELETE', { title });
+            if (res.success) await loadLibrary();
+        } catch (e) { console.error(e); }
     }
 
     document.getElementById('refreshLibBtn').addEventListener('click', loadLibrary);
@@ -393,7 +266,7 @@
     document.getElementById('recommendBtn').addEventListener('click', async () => {
         const recStatus = document.getElementById('recStatus');
         const recResult = document.getElementById('recommendationResult');
-        recStatus.innerHTML = '<span class="loading-spinner"></span> Qwen2.5 düşünüyor...';
+        recStatus.innerHTML = '<span class="loading-spinner"></span> Analiz ediliyor...';
         document.getElementById('recommendBtn').disabled = true;
         try {
             const res = await apiCall('/api/recommend');
@@ -413,9 +286,8 @@
         }
     });
 
-    // Enter ile ekleme
     document.getElementById('titleInput').addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') document.getElementById('addBtn').click();
+        if (e.key === 'Enter') document.getElementById('addBtn').click();
     });
 </script>
 </body>
