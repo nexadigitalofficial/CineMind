@@ -1,6 +1,5 @@
-flask
-chromadb
-ollama
-duckduckgo-search
-firebase-admin
-google-generativeai
+flask==3.1.0
+chromadb==0.6.3
+duckduckgo-search==7.5.3
+firebase-admin==6.5.0
+google-generativeai==0.8.3
