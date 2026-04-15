@@ -1,0 +1,5 @@
+flask
+chromadb
+ollama
+duckduckgo-search
+firebase-admin

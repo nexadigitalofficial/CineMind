@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineMind · Giriş</title>
+    <!-- Firebase JS SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: radial-gradient(circle at 20% 30%, #1a1f2c, #0a0c12);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            padding: 20px;
+        }
+        .glass-card {
+            background: rgba(20, 28, 40, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 36px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 25px 50px -8px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .logo {
+            font-size: 2.4rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ffffff, #a0b4e0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+        }
+        .sub {
+            text-align: center;
+            color: #8b9bb5;
+            margin-bottom: 36px;
+            font-size: 1rem;
+        }
+        .input-field {
+            margin-bottom: 20px;
+        }
+        .input-field label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #b7c3da;
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
+        }
+        .input-field input {
+            width: 100%;
+            background: rgba(0,0,0,0.25);
+            border: 1.5px solid #2e3a4e;
+            border-radius: 18px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            color: white;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .input-field input:focus {
+            border-color: #4f7df3;
+            box-shadow: 0 0 0 3px rgba(79, 125, 243, 0.15);
+        }
+        .btn {
+            width: 100%;
+            background: #2563eb;
+            border: none;
+            border-radius: 18px;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-top: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .btn:hover {
+            background: #1d4ed8;
+            transform: scale(0.99);
+        }
+        .btn.secondary {
+            background: transparent;
+            border: 1.5px solid #334155;
+            margin-top: 12px;
+        }
+        .btn.secondary:hover {
+            background: rgba(255,255,255,0.03);
+        }
+        .error-msg {
+            color: #f87171;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            text-align: center;
+        }
+        .toggle-text {
+            text-align: center;
+            margin-top: 28px;
+            color: #9aabca;
+            font-size: 0.95rem;
+        }
+        .toggle-link {
+            color: #7aa2f7;
+            cursor: pointer;
+            font-weight: 500;
+            margin-left: 6px;
+        }
+    </style>
+</head>
+<body>
+<div class="glass-card">
+    <div class="logo">CineMind</div>
+    <div class="sub">Zevkinin haritası</div>
+
+    <div id="loginForm">
+        <div class="input-field">
+            <label>E-posta</label>
+            <input type="email" id="loginEmail" placeholder="ornek@mail.com" autocomplete="email">
+        </div>
+        <div class="input-field">
+            <label>Şifre</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn" id="loginBtn">Giriş Yap</button>
+    </div>
+
+    <div id="signupForm" style="display: none;">
+        <div class="input-field">
+            <label>E-posta</label>
+            <input type="email" id="signupEmail" placeholder="ornek@mail.com">
+        </div>
+        <div class="input-field">
+            <label>Şifre</label>
+            <input type="password" id="signupPassword" placeholder="••••••••">
+        </div>
+        <button class="btn" id="signupBtn">Kaydol</button>
+    </div>
+
+    <div id="errorMsg" class="error-msg"></div>
+
+    <div class="toggle-text">
+        <span id="toggleMessage">Hesabın yok mu?</span>
+        <span class="toggle-link" id="toggleLink">Kaydol</span>
+    </div>
+</div>
+
+<script>
+    // Firebase yapılandırması - KENDİ BİLGİLERİNİZLE DEĞİŞTİRİN
+const firebaseConfig = {
+  apiKey: "AIzaSyA4sliX6WakLaE5mj1WsLliV8VOSDSY__w",
+  authDomain: "cinemind-96f2c.firebaseapp.com",
+  projectId: "cinemind-96f2c",
+  storageBucket: "cinemind-96f2c.firebasestorage.app",
+  messagingSenderId: "126711652018",
+  appId: "1:126711652018:web:1ab75aaa549719b32973ab",
+  measurementId: "G-VPXK2K1KMQ"
+};
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // UI elementleri
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const toggleLink = document.getElementById('toggleLink');
+    const toggleMessage = document.getElementById('toggleMessage');
+    const errorMsg = document.getElementById('errorMsg');
+
+    let isLogin = true;
+
+    function toggleMode() {
+        isLogin = !isLogin;
+        if (isLogin) {
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
+            toggleMessage.innerText = 'Hesabın yok mu?';
+            toggleLink.innerText = 'Kaydol';
+        } else {
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+            toggleMessage.innerText = 'Zaten hesabın var mı?';
+            toggleLink.innerText = 'Giriş Yap';
+        }
+        errorMsg.innerText = '';
+    }
+
+    toggleLink.addEventListener('click', toggleMode);
+
+    // Giriş
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass = document.getElementById('loginPassword').value;
+        errorMsg.innerText = '';
+        try {
+            await auth.signInWithEmailAndPassword(email, pass);
+            window.location.href = '/dashboard';
+        } catch (e) {
+            errorMsg.innerText = e.message;
+        }
+    });
+
+    // Kayıt
+    document.getElementById('signupBtn').addEventListener('click', async () => {
+        const email = document.getElementById('signupEmail').value.trim();
+        const pass = document.getElementById('signupPassword').value;
+        errorMsg.innerText = '';
+        try {
+            await auth.createUserWithEmailAndPassword(email, pass);
+            window.location.href = '/dashboard';
+        } catch (e) {
+            errorMsg.innerText = e.message;
+        }
+    });
+
+    // Enter ile gönderim
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') {
+                if(isLogin) document.getElementById('loginBtn').click();
+                else document.getElementById('signupBtn').click();
+            }
+        });
+    });
+
+    // Oturum açıksa dashboard'a yönlendir
+    auth.onAuthStateChanged(user => {
+        if (user) window.location.href = '/dashboard';
+    });
+</script>
+</body>
+</html>
