@@ -4,243 +4,196 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineMind · Giriş</title>
-    <!-- Firebase JS SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
-            background: radial-gradient(circle at 20% 30%, #1a1f2c, #0a0c12);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0c0f15;
+            color: #edf2fb;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
-            padding: 20px;
         }
-        .glass-card {
-            background: rgba(20, 28, 40, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 36px;
+        .login-card {
+            background: #111a26;
+            border: 1px solid #253040;
+            border-radius: 32px;
             padding: 48px 40px;
             width: 100%;
-            max-width: 440px;
-            box-shadow: 0 25px 50px -8px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
-            border: 1px solid rgba(255,255,255,0.08);
+            max-width: 420px;
         }
         .logo {
-            font-size: 2.4rem;
+            font-size: 2.2rem;
             font-weight: 600;
             letter-spacing: -0.02em;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #ffffff, #a0b4e0);
+            background: linear-gradient(135deg, #ffffff, #9bb1e0);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-align: center;
+            margin-bottom: 8px;
         }
-        .sub {
-            text-align: center;
-            color: #8b9bb5;
-            margin-bottom: 36px;
-            font-size: 1rem;
-        }
-        .input-field {
-            margin-bottom: 20px;
-        }
-        .input-field label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #b7c3da;
-            margin-bottom: 6px;
-            letter-spacing: 0.3px;
-        }
-        .input-field input {
+        .tagline { font-size: 0.95rem; color: #7a93b8; margin-bottom: 36px; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-size: 0.85rem; color: #8fa8cc; margin-bottom: 6px; }
+        input {
             width: 100%;
-            background: rgba(0,0,0,0.25);
-            border: 1.5px solid #2e3a4e;
-            border-radius: 18px;
+            background: #0b1119;
+            border: 1.5px solid #2e3c50;
+            border-radius: 14px;
             padding: 14px 18px;
             font-size: 1rem;
             color: white;
             outline: none;
-            transition: border 0.2s, box-shadow 0.2s;
+            transition: border-color 0.15s;
         }
-        .input-field input:focus {
-            border-color: #4f7df3;
-            box-shadow: 0 0 0 3px rgba(79, 125, 243, 0.15);
-        }
+        input:focus { border-color: #3b82f6; }
         .btn {
             width: 100%;
-            background: #2563eb;
-            border: none;
-            border-radius: 18px;
-            padding: 14px;
+            padding: 15px;
+            border-radius: 14px;
             font-size: 1rem;
             font-weight: 600;
-            color: white;
             cursor: pointer;
+            border: none;
             transition: all 0.15s;
-            margin-top: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 4px;
         }
-        .btn:hover {
-            background: #1d4ed8;
-            transform: scale(0.99);
-        }
-        .btn.secondary {
+        .btn-primary { background: #2563eb; color: white; border: 1px solid #3b82f6; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-secondary {
             background: transparent;
-            border: 1.5px solid #334155;
-            margin-top: 12px;
+            color: #9bb1e0;
+            border: 1.5px solid #2e3c50;
+            margin-top: 10px;
         }
-        .btn.secondary:hover {
-            background: rgba(255,255,255,0.03);
+        .btn-secondary:hover { background: #1a2438; }
+        .divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 20px 0; color: #3d5270; font-size: 0.85rem;
         }
-        .error-msg {
-            color: #f87171;
-            font-size: 0.9rem;
-            margin-top: 8px;
-            text-align: center;
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px; background: #1f2e40;
         }
-        .toggle-text {
-            text-align: center;
-            margin-top: 28px;
-            color: #9aabca;
-            font-size: 0.95rem;
+        .btn-google {
+            width: 100%; padding: 14px; border-radius: 14px;
+            background: #1a2438; border: 1.5px solid #2e3c50;
+            color: #e2eaf8; font-size: 1rem; font-weight: 500;
+            cursor: pointer; display: flex; align-items: center;
+            justify-content: center; gap: 10px; transition: all 0.15s;
         }
-        .toggle-link {
-            color: #7aa2f7;
-            cursor: pointer;
-            font-weight: 500;
-            margin-left: 6px;
-        }
+        .btn-google:hover { background: #1f2e47; border-color: #3b82f6; }
+        .toggle-link { text-align: center; margin-top: 18px; font-size: 0.9rem; color: #6b88b0; }
+        .toggle-link span { color: #6ea8fe; cursor: pointer; font-weight: 500; }
+        .toggle-link span:hover { text-decoration: underline; }
+        #statusMsg { margin-top: 12px; font-size: 0.9rem; min-height: 20px; text-align: center; }
+        .error { color: #f87171; }
+        .success { color: #4ade80; }
     </style>
 </head>
 <body>
-<div class="glass-card">
+<div class="login-card">
     <div class="logo">CineMind</div>
-    <div class="sub">Zevkinin haritası</div>
+    <div class="tagline">Sinematik zevkinin DNA'sını keşfet.</div>
 
-    <div id="loginForm">
-        <div class="input-field">
-            <label>E-posta</label>
-            <input type="email" id="loginEmail" placeholder="ornek@mail.com" autocomplete="email">
-        </div>
-        <div class="input-field">
-            <label>Şifre</label>
-            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
-        </div>
-        <button class="btn" id="loginBtn">Giriş Yap</button>
+    <div class="form-group">
+        <label>E-posta</label>
+        <input type="email" id="emailInput" placeholder="ornek@email.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+        <label>Şifre</label>
+        <input type="password" id="passInput" placeholder="••••••••" autocomplete="current-password">
     </div>
 
-    <div id="signupForm" style="display: none;">
-        <div class="input-field">
-            <label>E-posta</label>
-            <input type="email" id="signupEmail" placeholder="ornek@mail.com">
-        </div>
-        <div class="input-field">
-            <label>Şifre</label>
-            <input type="password" id="signupPassword" placeholder="••••••••">
-        </div>
-        <button class="btn" id="signupBtn">Kaydol</button>
-    </div>
+    <button class="btn btn-primary" id="loginBtn">Giriş Yap</button>
+    <button class="btn btn-secondary" id="registerBtn">Hesap Oluştur</button>
 
-    <div id="errorMsg" class="error-msg"></div>
+    <div class="divider">veya</div>
 
-    <div class="toggle-text">
-        <span id="toggleMessage">Hesabın yok mu?</span>
-        <span class="toggle-link" id="toggleLink">Kaydol</span>
+    <button class="btn-google" id="googleBtn">
+        <svg width="18" height="18" viewBox="0 0 18 18">
+            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+            <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+        </svg>
+        Google ile Giriş Yap
+    </button>
+
+    <div id="statusMsg"></div>
+    <div class="toggle-link">
+        <span id="toggleText">Hesabın yok mu? <span id="toggleLink">Kayıt ol</span></span>
     </div>
 </div>
 
 <script>
-    // Firebase yapılandırması - KENDİ BİLGİLERİNİZLE DEĞİŞTİRİN
-const firebaseConfig = {
-  apiKey: "AIzaSyA4sliX6WakLaE5mj1WsLliV8VOSDSY__w",
-  authDomain: "cinemind-96f2c.firebaseapp.com",
-  projectId: "cinemind-96f2c",
-  storageBucket: "cinemind-96f2c.firebasestorage.app",
-  messagingSenderId: "126711652018",
-  appId: "1:126711652018:web:1ab75aaa549719b32973ab",
-  measurementId: "G-VPXK2K1KMQ"
-};
+    const firebaseConfig = {
+        apiKey: "AIzaSyA4sliX6WakLaE5mj1WsLliV8VOSDSY__w",
+        authDomain: "cinemind-96f2c.firebaseapp.com",
+        projectId: "cinemind-96f2c",
+        storageBucket: "cinemind-96f2c.firebasestorage.app",
+        messagingSenderId: "126711652018",
+        appId: "1:126711652018:web:1ab75aaa549719b32973ab"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // UI elementleri
-    const loginForm = document.getElementById('loginForm');
-    const signupForm = document.getElementById('signupForm');
-    const toggleLink = document.getElementById('toggleLink');
-    const toggleMessage = document.getElementById('toggleMessage');
-    const errorMsg = document.getElementById('errorMsg');
-
-    let isLogin = true;
-
-    function toggleMode() {
-        isLogin = !isLogin;
-        if (isLogin) {
-            loginForm.style.display = 'block';
-            signupForm.style.display = 'none';
-            toggleMessage.innerText = 'Hesabın yok mu?';
-            toggleLink.innerText = 'Kaydol';
-        } else {
-            loginForm.style.display = 'none';
-            signupForm.style.display = 'block';
-            toggleMessage.innerText = 'Zaten hesabın var mı?';
-            toggleLink.innerText = 'Giriş Yap';
-        }
-        errorMsg.innerText = '';
-    }
-
-    toggleLink.addEventListener('click', toggleMode);
-
-    // Giriş
-    document.getElementById('loginBtn').addEventListener('click', async () => {
-        const email = document.getElementById('loginEmail').value.trim();
-        const pass = document.getElementById('loginPassword').value;
-        errorMsg.innerText = '';
-        try {
-            await auth.signInWithEmailAndPassword(email, pass);
-            window.location.href = '/dashboard';
-        } catch (e) {
-            errorMsg.innerText = e.message;
-        }
-    });
-
-    // Kayıt
-    document.getElementById('signupBtn').addEventListener('click', async () => {
-        const email = document.getElementById('signupEmail').value.trim();
-        const pass = document.getElementById('signupPassword').value;
-        errorMsg.innerText = '';
-        try {
-            await auth.createUserWithEmailAndPassword(email, pass);
-            window.location.href = '/dashboard';
-        } catch (e) {
-            errorMsg.innerText = e.message;
-        }
-    });
-
-    // Enter ile gönderim
-    document.querySelectorAll('input').forEach(input => {
-        input.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') {
-                if(isLogin) document.getElementById('loginBtn').click();
-                else document.getElementById('signupBtn').click();
-            }
-        });
-    });
-
-    // Oturum açıksa dashboard'a yönlendir
     auth.onAuthStateChanged(user => {
         if (user) window.location.href = '/dashboard';
+    });
+
+    let isRegister = false;
+    const statusMsg = document.getElementById('statusMsg');
+
+    function setStatus(msg, type = '') {
+        statusMsg.innerText = msg;
+        statusMsg.className = type;
+    }
+
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+        const email = document.getElementById('emailInput').value.trim();
+        const pass = document.getElementById('passInput').value;
+        if (!email || !pass) { setStatus('E-posta ve şifre gerekli.', 'error'); return; }
+        try {
+            if (isRegister) {
+                await auth.createUserWithEmailAndPassword(email, pass);
+                setStatus('Hesap oluşturuldu!', 'success');
+            } else {
+                await auth.signInWithEmailAndPassword(email, pass);
+            }
+        } catch (e) {
+            const msgs = {
+                'auth/user-not-found': 'Kullanıcı bulunamadı.',
+                'auth/wrong-password': 'Yanlış şifre.',
+                'auth/email-already-in-use': 'Bu e-posta zaten kayıtlı.',
+                'auth/weak-password': 'Şifre en az 6 karakter olmalı.',
+                'auth/invalid-email': 'Geçersiz e-posta formatı.'
+            };
+            setStatus(msgs[e.code] || e.message, 'error');
+        }
+    });
+
+    document.getElementById('registerBtn').addEventListener('click', () => {
+        isRegister = !isRegister;
+        document.getElementById('loginBtn').innerText = isRegister ? 'Hesap Oluştur' : 'Giriş Yap';
+        document.getElementById('registerBtn').innerText = isRegister ? 'Giriş ekranına dön' : 'Hesap Oluştur';
+        setStatus('');
+    });
+
+    document.getElementById('googleBtn').addEventListener('click', async () => {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        try {
+            await auth.signInWithPopup(provider);
+        } catch (e) {
+            setStatus(e.message, 'error');
+        }
+    });
+
+    document.getElementById('passInput').addEventListener('keypress', e => {
+        if (e.key === 'Enter') document.getElementById('loginBtn').click();
     });
 </script>
 </body>
