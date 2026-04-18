@@ -1,9 +1,8 @@
 import os
 import json
-import requests
 from functools import wraps
 from flask import Flask, request, jsonify, render_template
-import google.generativeai as genai
+from google import genai
 from duckduckgo_search import DDGS
 import firebase_admin
 from firebase_admin import credentials, auth, firestore
@@ -20,44 +19,32 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 # ==============================================
-# LLM Konfigürasyonu: Gemini veya Ollama
+# Gemini Konfigürasyonu (YENİ SDK: google-genai)
+# pip install google-genai
 # ==============================================
-USE_OLLAMA = os.environ.get("USE_OLLAMA", "false").lower() == "true"
-OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
-OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "llama3.2")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINI_API_KEY environment variable eksik!")
 
-if not USE_OLLAMA:
-    GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-    if not GEMINI_API_KEY:
-        raise ValueError("GEMINI_API_KEY environment variable eksik!")
-    genai.configure(api_key=GEMINI_API_KEY)
-    gemini_model = genai.GenerativeModel("gemini-1.5-flash")
+gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+GEMINI_MODEL = "gemini-2.5-flash"   # 2.0 serisi Haziran 2026'da kapatılıyor
+
 
 def llm_generate(prompt: str) -> str:
-    """Gemini veya Ollama ile metin üret."""
-    if USE_OLLAMA:
-        # Ollama OpenAI-compatible endpoint
-        response = requests.post(
-            f"{OLLAMA_BASE_URL}/v1/chat/completions",
-            headers={"Content-Type": "application/json"},
-            json={
-                "model": OLLAMA_MODEL,
-                "messages": [{"role": "user", "content": prompt}],
-                "stream": False
-            },
-            timeout=120
-        )
-        response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"].strip()
-    else:
-        resp = gemini_model.generate_content(prompt)
-        return resp.text.strip()
+    """Gemini ile metin üret."""
+    response = gemini_client.models.generate_content(
+        model=GEMINI_MODEL,
+        contents=prompt,
+    )
+    return response.text.strip()
+
 
 # ==============================================
 # Flask
 # ==============================================
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", os.urandom(24).hex())
+
 
 # ==============================================
 # Auth Decorator
@@ -77,6 +64,7 @@ def token_required(f):
             return jsonify({"error": f"Geçersiz token: {str(e)}"}), 401
         return f(*args, **kwargs)
     return decorated
+
 
 # ==============================================
 # CineMind Engine (Firestore tabanlı)
@@ -125,7 +113,7 @@ Cevabını sadece analiz metni olarak ver. Giriş cümlesi kullanma.
         try:
             return llm_generate(prompt)
         except Exception as e:
-            print(f"LLM Hatası: {e}")
+            print(f"Gemini Hatası: {e}")
             return "Görsel olarak çarpıcı, psikolojik derinliği olan bir eser."
 
     def add_to_memory(self, title: str) -> str:
@@ -250,6 +238,7 @@ def api_recommend():
         return jsonify({"success": True, "recommendations": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
