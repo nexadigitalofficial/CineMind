@@ -1,200 +1,292 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineMind · Giriş</title>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0c0f15;
-            color: #edf2fb;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-card {
-            background: #111a26;
-            border: 1px solid #253040;
-            border-radius: 32px;
-            padding: 48px 40px;
-            width: 100%;
-            max-width: 420px;
-        }
-        .logo {
-            font-size: 2.2rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff, #9bb1e0);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 8px;
-        }
-        .tagline { font-size: 0.95rem; color: #7a93b8; margin-bottom: 36px; }
-        .form-group { margin-bottom: 16px; }
-        label { display: block; font-size: 0.85rem; color: #8fa8cc; margin-bottom: 6px; }
-        input {
-            width: 100%;
-            background: #0b1119;
-            border: 1.5px solid #2e3c50;
-            border-radius: 14px;
-            padding: 14px 18px;
-            font-size: 1rem;
-            color: white;
-            outline: none;
-            transition: border-color 0.15s;
-        }
-        input:focus { border-color: #3b82f6; }
-        .btn {
-            width: 100%;
-            padding: 15px;
-            border-radius: 14px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.15s;
-            margin-top: 4px;
-        }
-        .btn-primary { background: #2563eb; color: white; border: 1px solid #3b82f6; }
-        .btn-primary:hover { background: #1d4ed8; }
-        .btn-secondary {
-            background: transparent;
-            color: #9bb1e0;
-            border: 1.5px solid #2e3c50;
-            margin-top: 10px;
-        }
-        .btn-secondary:hover { background: #1a2438; }
-        .divider {
-            display: flex; align-items: center; gap: 12px;
-            margin: 20px 0; color: #3d5270; font-size: 0.85rem;
-        }
-        .divider::before, .divider::after {
-            content: ''; flex: 1; height: 1px; background: #1f2e40;
-        }
-        .btn-google {
-            width: 100%; padding: 14px; border-radius: 14px;
-            background: #1a2438; border: 1.5px solid #2e3c50;
-            color: #e2eaf8; font-size: 1rem; font-weight: 500;
-            cursor: pointer; display: flex; align-items: center;
-            justify-content: center; gap: 10px; transition: all 0.15s;
-        }
-        .btn-google:hover { background: #1f2e47; border-color: #3b82f6; }
-        .toggle-link { text-align: center; margin-top: 18px; font-size: 0.9rem; color: #6b88b0; }
-        .toggle-link span { color: #6ea8fe; cursor: pointer; font-weight: 500; }
-        .toggle-link span:hover { text-decoration: underline; }
-        #statusMsg { margin-top: 12px; font-size: 0.9rem; min-height: 20px; text-align: center; }
-        .error { color: #f87171; }
-        .success { color: #4ade80; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineMind · Giriş</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<style>
+:root {
+  --bg:    #07090f;
+  --bg2:   #0d1019;
+  --bg3:   #121722;
+  --border:#1e2535;
+  --gold:  #c8a96e;
+  --gold2: #e8c98a;
+  --text:  #e8eaf2;
+  --text2: #8a97b0;
+  --text3: #556178;
+  --red:   #f87171;
+  --green: #4ade80;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+/* grain */
+body::before {
+  content:''; position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:999; opacity:0.35;
+}
+
+/* ── LEFT PANEL ── */
+.left {
+  flex:1; position:relative;
+  display:flex; flex-direction:column;
+  justify-content:flex-end; padding:52px;
+  overflow:hidden;
+}
+.left-bg {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 30% 60%, rgba(200,169,110,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 80% at 70% 20%, rgba(61,110,245,0.06) 0%, transparent 70%),
+    linear-gradient(160deg, #0a0e1a 0%, #070910 100%);
+}
+/* decorative film lines */
+.left-bg::after {
+  content:''; position:absolute; inset:0;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent, transparent 119px,
+      rgba(255,255,255,0.012) 120px
+    );
+}
+.left-quote {
+  position:relative; z-index:1;
+  max-width:460px;
+}
+.quote-mark {
+  font-family:'Playfair Display',serif;
+  font-size:6rem; line-height:0.6; color:var(--gold);
+  opacity:0.3; margin-bottom:12px; display:block;
+}
+.quote-text {
+  font-family:'Playfair Display',serif;
+  font-size:1.55rem; font-weight:400; font-style:italic;
+  color: rgba(232,234,242,0.75); line-height:1.55;
+  margin-bottom:20px;
+}
+.quote-attr { font-size:0.8rem; color:var(--text3); letter-spacing:0.08em; text-transform:uppercase; }
+
+.left-logo {
+  position:absolute; top:48px; left:52px; z-index:1;
+  font-family:'Playfair Display',serif;
+  font-size:1.9rem; color:var(--gold2); letter-spacing:-0.01em;
+}
+.left-logo em { font-style:italic; color:var(--gold); }
+
+/* ── RIGHT PANEL ── */
+.right {
+  width:460px; flex-shrink:0;
+  background:var(--bg2);
+  border-left:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  padding:48px 40px;
+}
+.card {
+  width:100%; max-width:360px;
+  animation: slideIn 0.5s cubic-bezier(.22,.68,0,1.2) both;
+}
+@keyframes slideIn {
+  from { opacity:0; transform:translateX(24px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+.card-title {
+  font-family:'Playfair Display',serif;
+  font-size:1.9rem; color:var(--text);
+  margin-bottom:6px; letter-spacing:-0.01em;
+}
+.card-sub { font-size:0.88rem; color:var(--text3); margin-bottom:36px; }
+
+.form-lbl {
+  display:block; font-size:0.76rem; font-weight:600;
+  letter-spacing:0.07em; text-transform:uppercase;
+  color:var(--text3); margin-bottom:7px;
+}
+.form-inp {
+  width:100%; background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:12px; padding:13px 16px;
+  font-size:0.95rem; color:var(--text); outline:none;
+  font-family:'Outfit',sans-serif;
+  transition:border-color 0.15s; margin-bottom:16px;
+}
+.form-inp:focus { border-color:var(--gold); }
+.form-inp::placeholder { color:var(--text3); }
+
+.btn-main {
+  width:100%; padding:14px;
+  background:linear-gradient(135deg,#c8a96e,#a8843e);
+  border:none; border-radius:12px;
+  font-weight:700; font-size:0.95rem; color:#0a0700;
+  cursor:pointer; font-family:'Outfit',sans-serif;
+  transition:opacity 0.15s; margin-bottom:10px;
+}
+.btn-main:hover { opacity:0.88; }
+
+.btn-sec {
+  width:100%; padding:13px;
+  background:transparent; border:1px solid var(--border);
+  border-radius:12px; color:var(--text2);
+  font-family:'Outfit',sans-serif; font-size:0.9rem;
+  cursor:pointer; transition:all 0.15s; margin-bottom:18px;
+}
+.btn-sec:hover { border-color:var(--gold); color:var(--gold2); }
+
+.divider {
+  display:flex; align-items:center; gap:12px;
+  color:var(--text3); font-size:0.82rem; margin-bottom:18px;
+}
+.divider::before,.divider::after {
+  content:''; flex:1; height:1px; background:var(--border);
+}
+
+.btn-google {
+  width:100%; padding:13px;
+  background:var(--bg3); border:1px solid var(--border);
+  border-radius:12px; color:var(--text2);
+  font-family:'Outfit',sans-serif; font-size:0.9rem; font-weight:500;
+  cursor:pointer; display:flex; align-items:center;
+  justify-content:center; gap:10px; transition:all 0.15s;
+}
+.btn-google:hover { border-color:rgba(66,133,244,0.5); color:var(--text); }
+
+.toggle {
+  text-align:center; margin-top:20px;
+  font-size:0.87rem; color:var(--text3);
+}
+.toggle-link { color:var(--gold); cursor:pointer; font-weight:500; }
+.toggle-link:hover { text-decoration:underline; }
+
+#statusMsg { margin-top:14px; font-size:0.87rem; min-height:18px; text-align:center; }
+.err { color:var(--red); } .ok { color:var(--green); }
+
+@media(max-width:820px){
+  .left { display:none; }
+  .right { width:100%; border-left:none; padding:36px 24px; }
+}
+</style>
 </head>
 <body>
-<div class="login-card">
-    <div class="logo">CineMind</div>
-    <div class="tagline">Sinematik zevkinin DNA'sını keşfet.</div>
 
-    <div class="form-group">
-        <label>E-posta</label>
-        <input type="email" id="emailInput" placeholder="ornek@email.com" autocomplete="email">
-    </div>
-    <div class="form-group">
-        <label>Şifre</label>
-        <input type="password" id="passInput" placeholder="••••••••" autocomplete="current-password">
-    </div>
+<div class="left">
+  <div class="left-bg"></div>
+  <div class="left-logo">Cine<em>Mind</em></div>
+  <div class="left-quote">
+    <span class="quote-mark">"</span>
+    <p class="quote-text">Sinema, başka bir hayatın kapısını aralayan tek sanattır.</p>
+    <p class="quote-attr">— Andrei Tarkovsky</p>
+  </div>
+</div>
 
-    <button class="btn btn-primary" id="loginBtn">Giriş Yap</button>
-    <button class="btn btn-secondary" id="registerBtn">Hesap Oluştur</button>
+<div class="right">
+  <div class="card">
+    <h1 class="card-title" id="cardTitle">Hoş geldin.</h1>
+    <p class="card-sub" id="cardSub">Sinematik DNA'na giriş yap.</p>
+
+    <label class="form-lbl">E-posta</label>
+    <input class="form-inp" type="email" id="emailInput" placeholder="ornek@email.com" autocomplete="email">
+
+    <label class="form-lbl">Şifre</label>
+    <input class="form-inp" type="password" id="passInput" placeholder="••••••••" autocomplete="current-password">
+
+    <button class="btn-main" id="mainBtn">Giriş Yap</button>
+    <button class="btn-sec"  id="toggleBtn">Hesap Oluştur</button>
 
     <div class="divider">veya</div>
 
     <button class="btn-google" id="googleBtn">
-        <svg width="18" height="18" viewBox="0 0 18 18">
-            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
-            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
-            <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
-            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
-        </svg>
-        Google ile Giriş Yap
+      <svg width="18" height="18" viewBox="0 0 18 18">
+        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+        <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+      </svg>
+      Google ile Giriş Yap
     </button>
 
     <div id="statusMsg"></div>
-    <div class="toggle-link">
-        <span id="toggleText">Hesabın yok mu? <span id="toggleLink">Kayıt ol</span></span>
+    <div class="toggle">
+      <span id="toggleHint">Hesabın yok mu? </span>
+      <span class="toggle-link" id="toggleLink">Kayıt ol</span>
     </div>
+  </div>
 </div>
 
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyA4sliX6WakLaE5mj1WsLliV8VOSDSY__w",
-        authDomain: "cinemind-96f2c.firebaseapp.com",
-        projectId: "cinemind-96f2c",
-        storageBucket: "cinemind-96f2c.firebasestorage.app",
-        messagingSenderId: "126711652018",
-        appId: "1:126711652018:web:1ab75aaa549719b32973ab"
+firebase.initializeApp({
+  apiKey: "AIzaSyA4sliX6WakLaE5mj1WsLliV8VOSDSY__w",
+  authDomain: "cinemind-96f2c.firebaseapp.com",
+  projectId: "cinemind-96f2c",
+  storageBucket: "cinemind-96f2c.firebasestorage.app",
+  messagingSenderId: "126711652018",
+  appId: "1:126711652018:web:1ab75aaa549719b32973ab"
+});
+const auth = firebase.auth();
+auth.onAuthStateChanged(u => { if(u) window.location.href='/dashboard'; });
+
+let isReg = false;
+const status = document.getElementById('statusMsg');
+
+function setStatus(msg, cls='') { status.innerText=msg; status.className=cls; }
+
+document.getElementById('mainBtn').addEventListener('click', async () => {
+  const email = document.getElementById('emailInput').value.trim();
+  const pass  = document.getElementById('passInput').value;
+  if (!email||!pass) { setStatus('E-posta ve şifre gerekli.','err'); return; }
+  try {
+    isReg
+      ? await auth.createUserWithEmailAndPassword(email,pass)
+      : await auth.signInWithEmailAndPassword(email,pass);
+  } catch(e) {
+    const map = {
+      'auth/user-not-found':'Kullanıcı bulunamadı.',
+      'auth/wrong-password':'Yanlış şifre.',
+      'auth/email-already-in-use':'Bu e-posta zaten kayıtlı.',
+      'auth/weak-password':'Şifre en az 6 karakter olmalı.',
+      'auth/invalid-email':'Geçersiz e-posta formatı.',
+      'auth/invalid-credential':'E-posta veya şifre hatalı.'
     };
+    setStatus(map[e.code]||e.message,'err');
+  }
+});
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+document.getElementById('toggleBtn').addEventListener('click', () => {
+  isReg = !isReg;
+  document.getElementById('cardTitle').innerText  = isReg ? 'Hesap Oluştur' : 'Hoş geldin.';
+  document.getElementById('cardSub').innerText    = isReg ? 'Kütüphaneni oluşturmaya başla.' : 'Sinematik DNA\'na giriş yap.';
+  document.getElementById('mainBtn').innerText    = isReg ? 'Kayıt Ol' : 'Giriş Yap';
+  document.getElementById('toggleBtn').innerText  = isReg ? 'Giriş ekranına dön' : 'Hesap Oluştur';
+  document.getElementById('toggleHint').innerText = isReg ? 'Zaten hesabın var mı? ' : 'Hesabın yok mu? ';
+  document.getElementById('toggleLink').innerText = isReg ? 'Giriş yap' : 'Kayıt ol';
+  setStatus('');
+});
 
-    auth.onAuthStateChanged(user => {
-        if (user) window.location.href = '/dashboard';
-    });
+document.getElementById('toggleLink').addEventListener('click', () =>
+  document.getElementById('toggleBtn').click()
+);
 
-    let isRegister = false;
-    const statusMsg = document.getElementById('statusMsg');
+document.getElementById('googleBtn').addEventListener('click', async () => {
+  try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+  catch(e) { setStatus(e.message,'err'); }
+});
 
-    function setStatus(msg, type = '') {
-        statusMsg.innerText = msg;
-        statusMsg.className = type;
-    }
-
-    document.getElementById('loginBtn').addEventListener('click', async () => {
-        const email = document.getElementById('emailInput').value.trim();
-        const pass = document.getElementById('passInput').value;
-        if (!email || !pass) { setStatus('E-posta ve şifre gerekli.', 'error'); return; }
-        try {
-            if (isRegister) {
-                await auth.createUserWithEmailAndPassword(email, pass);
-                setStatus('Hesap oluşturuldu!', 'success');
-            } else {
-                await auth.signInWithEmailAndPassword(email, pass);
-            }
-        } catch (e) {
-            const msgs = {
-                'auth/user-not-found': 'Kullanıcı bulunamadı.',
-                'auth/wrong-password': 'Yanlış şifre.',
-                'auth/email-already-in-use': 'Bu e-posta zaten kayıtlı.',
-                'auth/weak-password': 'Şifre en az 6 karakter olmalı.',
-                'auth/invalid-email': 'Geçersiz e-posta formatı.'
-            };
-            setStatus(msgs[e.code] || e.message, 'error');
-        }
-    });
-
-    document.getElementById('registerBtn').addEventListener('click', () => {
-        isRegister = !isRegister;
-        document.getElementById('loginBtn').innerText = isRegister ? 'Hesap Oluştur' : 'Giriş Yap';
-        document.getElementById('registerBtn').innerText = isRegister ? 'Giriş ekranına dön' : 'Hesap Oluştur';
-        setStatus('');
-    });
-
-    document.getElementById('googleBtn').addEventListener('click', async () => {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        try {
-            await auth.signInWithPopup(provider);
-        } catch (e) {
-            setStatus(e.message, 'error');
-        }
-    });
-
-    document.getElementById('passInput').addEventListener('keypress', e => {
-        if (e.key === 'Enter') document.getElementById('loginBtn').click();
-    });
+document.getElementById('passInput').addEventListener('keypress', e => {
+  if(e.key==='Enter') document.getElementById('mainBtn').click();
+});
 </script>
 </body>
 </html>
