@@ -240,6 +240,53 @@ def api_recommend():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/api/chat", methods=["POST"])
+@token_required
+def api_chat():
+    """Ruh haline göre film öneren chatbot."""
+    data = request.json or {}
+    message = data.get("message", "").strip()
+    history = data.get("history", [])   # [{role, content}, ...]
+    if not message:
+        return jsonify({"error": "Mesaj boş olamaz"}), 400
+
+    engine = CineMindEngine(request.user["uid"])
+    library = engine.get_library()
+
+    library_ctx = ""
+    if library:
+        library_ctx = "Kullanıcının favori eserleri:\n" + "\n".join(
+            f"- {item['title']}: {item['dna']}" for item in library
+        )
+
+    history_ctx = ""
+    if history:
+        history_ctx = "\nKonuşma geçmişi:\n" + "\n".join(
+            f"{m['role'].capitalize()}: {m['content']}" for m in history[-6:]
+        )
+
+    prompt = f"""Sen CineMind, derin bir sinema kültürüne sahip, empatik ve analitik bir film danışmanısın.
+Kullanıcının ruh hali, duyguları veya o anki isteğine göre kişiselleştirilmiş film/dizi önerileri yapıyorsun.
+
+{library_ctx}
+{history_ctx}
+
+Kullanıcı şöyle diyor: "{message}"
+
+Yanıt kuralların:
+- Sıcak, samimi ve içten bir dil kullan — bir film arkadaşı gibi
+- 2-3 somut öneri ver; her biri için 1-2 cümle "neden sana uyar" açıklaması ekle
+- Kullanıcının kütüphanesindeki eserlerle bağlantı kur (varsa)
+- Kısa tut: max 200 kelime
+- Türkçe yaz"""
+
+    try:
+        reply = llm_generate(prompt)
+        return jsonify({"success": True, "reply": reply})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
